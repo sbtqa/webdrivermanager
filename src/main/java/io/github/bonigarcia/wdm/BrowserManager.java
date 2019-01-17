@@ -548,9 +548,9 @@ public abstract class BrowserManager {
             List<URL> urlList = new ArrayList<>();
 
             for (org.jsoup.nodes.Element element : doc.select("a")) {
-                String link = element.attr("href").toLowerCase();
+                final String link = element.attr("href").toLowerCase();
 
-                if (link.startsWith("http") && link.contains("nexus")) {
+                if (link.startsWith("http")) {
                     if (link.endsWith(SLASH)) {
                         urlList.addAll(getDriversFromNexus(new URL(link)));
                     } else if (link.endsWith(".bin") || link.endsWith(".jar")) {

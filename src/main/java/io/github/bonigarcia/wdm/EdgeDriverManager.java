@@ -24,6 +24,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.github.bonigarcia.wdm.WdmConfig.getInt;
 import static io.github.bonigarcia.wdm.WdmConfig.getString;
@@ -57,7 +59,16 @@ public class EdgeDriverManager extends BrowserManager {
     @Override
     public List<URL> getDrivers() throws IOException {
         if (isUsingNexus()) {
-            return getDriversFromNexus(getDriverUrl());
+            List<URL> driversFromNexus = getDriversFromNexus(getDriverUrl());
+            listVersions = new ArrayList<>();
+            Pattern pattern = Pattern.compile("\\/(\\d+)\\/");
+            for (URL driver : driversFromNexus) {
+                Matcher matcher = pattern.matcher(driver.toString());
+                if (matcher.find() && !listVersions.contains(matcher.group(1))) {
+                    listVersions.add(matcher.group(1));
+                }
+            }
+            return driversFromNexus;
         } else {
             listVersions = new ArrayList<>();
             List<URL> urlList = new ArrayList<>();
